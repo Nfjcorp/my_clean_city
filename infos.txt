@@ -1,0 +1,41 @@
+Structure du projet my_clean_city et rôle de chaque fichier/dossier :
+
+Racine du projet :
+- pubspec.yaml : Fichier de configuration principal du projet Flutter (dépendances, assets, etc.).
+- pubspec.lock : Verrouille les versions exactes des dépendances utilisées.
+- analysis_options.yaml : Configuration de l'analyse statique du code.
+- README.md : Documentation du projet.
+- my_clean_city.iml : Fichier de configuration de projet pour IntelliJ/Android Studio.
+
+Dossiers principaux :
+- android/ : Code source et configuration pour l'application Android (build.gradle, propriétés, etc.).
+- ios/ : Code source et configuration pour l'application iOS (Info.plist, AppDelegate.swift, etc.).
+- lib/ : Code source principal de l'application Flutter.
+  - main.dart : Point d'entrée de l'application.
+  - core/ : Dossier pour les services, utilitaires, modèles et providers.
+    - services/ : Services métier ou d'accès aux données.
+    - utils/ : Fonctions utilitaires.
+    - models/ : Modèles de données utilisés dans l'application.
+    - providers/ : Fournisseurs d'état (state management), ex : auth_provider.dart pour l'authentification.
+  - views/ : Vues (pages) de l'application.
+    - auth/ : Pages liées à l'authentification.
+      - login_screen.dart : Écran de connexion.
+      - register_screen.dart : Écran d'inscription (register).
+    - home/ : Pages d'accueil.
+    - settings/ : Pages de paramètres.
+      - settings_screen.dart : Écran des paramètres de l'application.
+  - widgets/ : Widgets personnalisés réutilisables (ex : button_custom.dart, text_field_custom.dart, etc.).
+- assets/ : Ressources statiques (images, icônes, logos).
+  - brands/ : Logos de marques (ex : clean.png).
+  - icons/ : Icônes personnalisées (ex : facebook.png, google.png, etc.).
+  - images/ : Autres images utilisées dans l'app.
+- test/ : Tests unitaires et widgets (ex : widget_test.dart).
+- build/ : Dossier généré lors de la compilation (fichiers temporaires, outputs, etc.).
+- linux/, macos/, windows/ : Code et configuration pour les plateformes desktop.
+- web/ : Fichiers pour la version web de l'application (index.html, manifest.json, etc.).
+
+Mises à jour :
+- Ajout du fichier lib/views/auth/register_screen.dart : écran d'inscription (Register).
+- Ajout du fichier lib/views/settings/settings_screen.dart : écran des paramètres de l'application.
+
+Chaque fichier/dossier a un rôle précis pour organiser le code, les ressources et la configuration du projet Flutter sur toutes les plateformes supportées.
