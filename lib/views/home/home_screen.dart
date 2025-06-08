@@ -2,9 +2,9 @@ import 'package:circular_bottom_navigation/circular_bottom_navigation.dart';
 import 'package:circular_bottom_navigation/tab_item.dart';
 import 'package:flutter/material.dart';
 import 'package:my_clean_city/views/home/body_home.dart';
-import 'package:my_clean_city/views/settings/profile_screen.dart';
+import 'package:my_clean_city/views/maps/map_screnn.dart';
 import 'package:my_clean_city/views/settings/settings_screen.dart';
-import 'package:my_clean_city/views/settings/theme_setting_screen.dart';
+import 'package:my_clean_city/views/shopping/shop_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -16,8 +16,8 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   List<TabItem> tabItems = List.of([
     TabItem(Icons.home, 'Home', Colors.green),
-    TabItem(Icons.map, 'Map', Colors.green),
-    TabItem(Icons.notifications, 'Notifications', Colors.green),
+    TabItem(Icons.map, 'Point de collecte', Colors.green),
+    TabItem(Icons.shopping_bag, 'Shop', Colors.green),
     TabItem(Icons.settings, 'Settings', Colors.green),
   ]);
 
@@ -36,12 +36,7 @@ class _HomeScreenState extends State<HomeScreen> {
   void initState() {
     super.initState();
     _navigationController = CircularBottomNavigationController(selectedIndex);
-    screens = [
-      BodyHome(),
-      ProfileScreen(),
-      ThemeSettingScreen(),
-      SettingsScreen(),
-    ];
+    screens = [BodyHome(), MapScrenn(), ShopScreen(), SettingsScreen()];
   }
 
   void onTabTapped(int index) {

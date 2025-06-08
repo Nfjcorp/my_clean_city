@@ -1,10 +1,11 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:my_clean_city/core/utils/colors.dart';
-import 'package:my_clean_city/core/utils/styles.dart';
+import 'package:my_clean_city/providers/auth_providers.dart';
 import 'package:my_clean_city/widgets/button_custom.dart';
 import 'package:my_clean_city/widgets/form_custom.dart';
 import 'package:my_clean_city/widgets/text_custom.dart';
 import 'package:my_clean_city/widgets/text_field_custom.dart';
+import 'package:provider/provider.dart';
 
 class ForgotPasswordScreen extends StatefulWidget {
   const ForgotPasswordScreen({super.key});
@@ -14,77 +15,87 @@ class ForgotPasswordScreen extends StatefulWidget {
 }
 
 class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
-  final TextEditingController passwordController = TextEditingController();
-  final TextEditingController confrimPassword = TextEditingController();
+  final GlobalKey<FormState> formKey = GlobalKey<FormState>();
   final TextEditingController emailController = TextEditingController();
+
+  void resetPassword() async {
+    final provid = Provider.of<AuthProviders>(context);
+    if (formKey.currentState!.validate()) {
+      try {
+        await provid.resetPaswword(emailController.text.trim());
+        // ignore: use_build_context_synchronously
+        Navigator.pop(context);
+        // ignore: use_build_context_synchronously
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Password reset email sent'),
+            duration: Duration(seconds: 2),
+          ),
+        );
+      } on FirebaseAuthException catch (e) {
+        throw Exception(e.code);
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    final formKey = GlobalKey<FormState>();
+    //final user = provid.getCurrentUser();
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
-        leading: IconButton(
-          onPressed: () {
-            Navigator.pop(context);
-          },
-          icon: Icon(Icons.arrow_back),
-        ),
-        title: Text(
-          'Reset Password',
-          style: TextStyle(fontWeight: FontWeight.bold),
-        ),
-        centerTitle: true,
+        backgroundColor: Colors.white,
+        elevation: 0,
+        automaticallyImplyLeading: true,
       ),
       body: Padding(
         padding: const EdgeInsets.all(20.0),
         child: Column(
           children: [
-            Image.asset('name'),
-            SizedBox(height: 30),
-            Text('Create New Password'),
-            Text('Your'),
-            FormCustom(
-              formKey: formKey,
-              child: Column(
-                children: [
-                  TextFieldCustom(
-                    controller: passwordController,
-                    labelText: 'Enter Your Password',
-                    prefixIcon: Icon(Icons.lock),
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'please enter your password';
-                      } else if (value.length < 8) {
-                        return 'password must be at least 8 characters';
-                      } else {
-                        return null;
-                      }
-                    },
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                TextCustom(
+                  data: 'Paswword reinitialisation',
+                  fontSize: 28,
+                  fontWeight: FontWeight.bold,
+                ),
+                TextCustom(
+                  data: 'Email linked to your CleanCity account',
+                  fontSize: 14,
+                  color: Colors.grey,
+                ),
+                SizedBox(height: 20),
+                FormCustom(
+                  formKey: formKey,
+                  child: Column(
+                    children: [
+                      TextFieldCustom(
+                        controller: emailController,
+                        labelText: 'Email',
+                        prefixIcon: Icon(Icons.mail),
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'please enter your email';
+                          } else {
+                            return null;
+                          }
+                        },
+                      ),
+                    ],
                   ),
-                  SizedBox(height: 20),
-                  TextFieldCustom(
-                    controller: confrimPassword,
-                    labelText: 'Confirm Your Password',
-                    prefixIcon: Icon(Icons.lock),
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'please enter your password';
-                      } else if (value.length < 8) {
-                        return 'password must be at least 8 characters';
-                      } else {
-                        return null;
-                      }
-                    },
-                  ),
-
-                  SizedBox(height: 30),
-                  ButtonCustom(
-                    onTap: () {},
-                    child: TextCustom(
-                      data: 'Resend',
-                      style: buttonStyle(color: whiteColor),
-                    ),
-                  ),
-                ],
+                ),
+              ],
+            ),
+            Spacer(),
+            ButtonCustom(
+              onTap: resetPassword,
+              child: Center(
+                child: TextCustom(
+                  data: 'continue',
+                  fontSize: 16,
+                  color: Colors.white,
+                ),
               ),
             ),
           ],

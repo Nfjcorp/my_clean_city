@@ -10,10 +10,9 @@ class MultiContainerRow extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         ImageContainer(imagePath: 'assets/icons/google.png'),
-        SizedBox(width: 20),
+        SizedBox(width: 10),
         ImageContainer(imagePath: 'assets/icons/facebook.png'),
-        SizedBox(width: 20),
-        ImageContainer(imagePath: 'assets/icons/apple.png'),
+        SizedBox(width: 10),
       ],
     );
   }

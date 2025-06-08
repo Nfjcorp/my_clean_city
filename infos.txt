@@ -17,6 +17,7 @@ Dossiers principaux :
     - utils/ : Fonctions utilitaires.
     - models/ : Modèles de données utilisés dans l'application.
     - providers/ : Fournisseurs d'état (state management), ex : auth_provider.dart pour l'authentification.
+      - auth_provider.dart : Provider pour la gestion de l'authentification (hérite de ChangeNotifier, centralise la logique d'authentification et la notification des changements d'état à l'UI).
   - views/ : Vues (pages) de l'application.
     - auth/ : Pages liées à l'authentification.
       - login_screen.dart : Écran de connexion.
@@ -37,5 +38,6 @@ Dossiers principaux :
 Mises à jour :
 - Ajout du fichier lib/views/auth/register_screen.dart : écran d'inscription (Register).
 - Ajout du fichier lib/views/settings/settings_screen.dart : écran des paramètres de l'application.
+- Ajout du fichier lib/providers/auth_provider.dart : provider pour la gestion de l'authentification.
 
 Chaque fichier/dossier a un rôle précis pour organiser le code, les ressources et la configuration du projet Flutter sur toutes les plateformes supportées.

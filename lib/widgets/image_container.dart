@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 
 class ImageContainer extends StatelessWidget {
-  const ImageContainer({super.key, required this.imagePath});
+  const ImageContainer({super.key, required this.imagePath, this.width});
 
   final String imagePath;
+  final double? width;
 
   @override
   Widget build(BuildContext context) {
