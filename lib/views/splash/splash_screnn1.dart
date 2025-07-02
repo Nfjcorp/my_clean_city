@@ -39,7 +39,18 @@ class _SplashScrennState extends State<SplashScrenn> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Image.asset('assets/brands/logo_clean.png', width: 150),
-            TextCustom(data: 'Reduce. Reuse. Recycle', fontSize: 16, color: Colors.black, fontWeight: FontWeight.bold,),
+            TextCustom(
+              data: 'Reduce. Reuse. Recycle',
+              fontSize: 16,
+              color: Colors.black,
+              fontWeight: FontWeight.bold,
+            ),
+            TextCustom(
+              data: 'Repeat!',
+              fontSize: 16,
+              color: Colors.black,
+              fontWeight: FontWeight.bold,
+            ),
           ],
         ),
       ),

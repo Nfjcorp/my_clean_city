@@ -20,21 +20,20 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
 
   void resetPassword() async {
     final provid = Provider.of<AuthProviders>(context);
-    if (formKey.currentState!.validate()) {
-      try {
-        await provid.resetPaswword(emailController.text.trim());
-        // ignore: use_build_context_synchronously
-        Navigator.pop(context);
-        // ignore: use_build_context_synchronously
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('Password reset email sent'),
-            duration: Duration(seconds: 2),
-          ),
-        );
-      } on FirebaseAuthException catch (e) {
-        throw Exception(e.code);
-      }
+    if (formKey.currentState!.validate()) return;
+    try {
+      await provid.resetPaswword(emailController.text.trim());
+      // ignore: use_build_context_synchronously
+      Navigator.pop(context);
+      // ignore: use_build_context_synchronously
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Password reset email sent'),
+          duration: Duration(seconds: 2),
+        ),
+      );
+    } on FirebaseAuthException catch (e) {
+      throw Exception(e.code);
     }
   }
 

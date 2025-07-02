@@ -1,9 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:my_clean_city/core/utils/helpers.dart';
 import 'package:my_clean_city/providers/auth_providers.dart';
-import 'package:my_clean_city/views/home/body_home.dart';
-import 'package:my_clean_city/views/home/home_screen.dart';
 import 'package:my_clean_city/widgets/button_custom.dart';
 import 'package:my_clean_city/widgets/form_custom.dart';
 import 'package:my_clean_city/widgets/multi_container_row.dart';
@@ -20,7 +19,8 @@ class RegisterScreen extends StatefulWidget {
 }
 
 class _RegisterScreenState extends State<RegisterScreen> {
-  bool isObscure = true;
+  bool isObscurePassword = true;
+  bool isObscureConfirmPassword = true;
   final formKey = GlobalKey<FormState>();
   final TextEditingController emailController = TextEditingController();
   final TextEditingController nameController = TextEditingController();
@@ -48,26 +48,29 @@ class _RegisterScreenState extends State<RegisterScreen> {
   String? _selectedRegion;
 
   void register() async {
-    final auth = Provider.of<AuthProviders>(context);
+    final auth = Provider.of<AuthProviders>(context, listen: false);
     final FirebaseFirestore firestore = FirebaseFirestore.instance;
-    if (formKey.currentState!.validate()) return;
-    if (emailController.text != confirmController.text) {
-      showSnackBar(context, 'les deux mots de passe ne correspondent pas',);
+    if (!formKey.currentState!.validate()) return;
+    if (passwordController.text != confirmController.text) {
+      showSnackBar(context, 'les deux mots de passe ne correspondent pas');
       return;
     }
 
     try {
-      await auth.signInWithEmailAndPassword(
+      print('object');
+      final User = await auth.signUp(
         emailController.text.trim(),
         passwordController.text.trim(),
       );
-
-      await firestore.collection("Users").doc(auth.user!.uid).set({
+      debugPrint('id des utilisateurs ');
+      debugPrint('id des utilisateurs :${User!.uid}');
+      await firestore.collection("Users").doc(User.uid).set({
         'name': nameController.text.trim(),
         'email': emailController.text.trim(),
         'region': _selectedRegion,
         'timestamp': Timestamp.now(),
       });
+      print('object re');
 
       formKey.currentState!.reset(); // Réinisialise les états de validation
       nameController.clear();
@@ -77,7 +80,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
       setState(() {
         _selectedRegion = null;
       });
-      navigatePushReplacement(context, BodyHome());
     } on FirebaseException catch (e) {
       throw Exception(e.message);
     }
@@ -180,17 +182,17 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       SizedBox(height: 20),
                       TextFieldCustom(
                         controller: passwordController,
-                        obscureText: isObscure,
+                        obscureText: isObscurePassword,
                         labelText: 'Password',
                         prefixIcon: Icon(Icons.lock_outline_rounded),
                         suffixIcon: IconButton(
                           onPressed: () {
                             setState(() {
-                              isObscure = !isObscure;
+                              isObscurePassword = !isObscurePassword;
                             });
                           },
                           icon:
-                              isObscure
+                              isObscurePassword
                                   ? Icon(Icons.visibility)
                                   : Icon(Icons.visibility_off),
                         ),
@@ -207,17 +209,18 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       SizedBox(height: 20),
                       TextFieldCustom(
                         controller: confirmController,
-                        obscureText: isObscure,
+                        obscureText: isObscureConfirmPassword,
                         labelText: 'Confirm Password',
                         prefixIcon: Icon(Icons.lock_outline_rounded),
                         suffixIcon: IconButton(
                           onPressed: () {
                             setState(() {
-                              isObscure = !isObscure;
+                              isObscureConfirmPassword =
+                                  !isObscureConfirmPassword;
                             });
                           },
                           icon:
-                              isObscure
+                              isObscureConfirmPassword
                                   ? Icon(Icons.visibility)
                                   : Icon(Icons.visibility_off),
                         ),
@@ -236,7 +239,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 ),
                 SizedBox(height: 20),
                 ButtonCustom(
-                  onTap: () => navigateToNextPage(context, HomeScreen()),
+                  onTap: () => register(),
                   child: Center(
                     child: TextCustom(
                       data: 'Sign Up',

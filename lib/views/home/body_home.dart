@@ -1,8 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:my_clean_city/core/utils/colors.dart';
 import 'package:my_clean_city/core/utils/helpers.dart';
+import 'package:my_clean_city/models/item_model.dart';
 import 'package:my_clean_city/providers/auth_providers.dart';
+import 'package:my_clean_city/views/demande/request_screen.dart';
+import 'package:my_clean_city/views/detail/detail_screen.dart';
 import 'package:my_clean_city/views/notifications/notification_screnn.dart';
+import 'package:my_clean_city/widgets/button_custom.dart';
+import 'package:my_clean_city/widgets/item_data_custum.dart';
 import 'package:my_clean_city/widgets/text_custom.dart';
 import 'package:provider/provider.dart';
 
@@ -31,7 +36,7 @@ class BodyHome extends StatelessWidget {
                     ),
                     TextCustom(
                       data: user != null ? '${user.email}' : 'null',
-                      fontSize: 24,
+                      fontSize: 16,
                       fontWeight: FontWeight.bold,
                       color: Colors.green,
                     ),
@@ -74,16 +79,44 @@ class BodyHome extends StatelessWidget {
                   child: ListView.separated(
                     scrollDirection: Axis.horizontal,
                     itemBuilder: (BuildContext context, index) {
-                      return Container(
-                        width: 20,
-                        height: 20,
-                        color: Colors.yellow,
+                      final data = itemData[index];
+                      return GestureDetector(
+                        onTap:
+                            () => navigateToNextPage(
+                              context,
+                              DetailScreen(
+                                item: ItemModel(
+                                  description: data['description'],
+                                  imagePath: data['imagePath'],
+                                  name: data['name'],
+                                  tag: data['tag'],
+                                  color: data['color'],
+                                  about: data['about'],
+                                ),
+                              ),
+                            ),
+                        child: ItemDataCustum(
+                          tag: data['tag'],
+                          image: data['imagePath'],
+                          data: data['name'],
+                        ),
                       );
                     },
                     separatorBuilder: (context, index) {
                       return SizedBox(width: 10.0);
                     },
-                    itemCount: 5,
+                    itemCount: itemData.length,
+                  ),
+                ),
+                SizedBox(height: 25.0),
+                ButtonCustom(
+                  onTap: () => navigateToNextPage(context, RequestScreen()),
+                  child: Center(
+                    child: TextCustom(
+                      data: 'Effectuer une demande collectte',
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                 ),
               ],

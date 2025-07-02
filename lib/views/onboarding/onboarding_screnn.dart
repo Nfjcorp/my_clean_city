@@ -32,9 +32,8 @@ class _OnboardingState extends State<OnboardingScrenn> {
         child: Padding(
           padding: EdgeInsetsDirectional.all(20),
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.end,
             children: [
+              SizedBox(height: 100),
               Expanded(
                 child: PageView.builder(
                   onPageChanged: pageChanged,

@@ -19,7 +19,7 @@ List<Map<String, dynamic>> onboardingData = [
   },
   {
     'imageUrl': 'assets/images/onbaording2.png',
-    'title': '',
+    'title': 'Gérez vos déchets',
     'description':
         'Gérer efficacement vos déchets à la maison ou en entreprise',
   },

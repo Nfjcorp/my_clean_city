@@ -83,9 +83,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             isObscure = !isObscure;
                           });
                         },
-                        icon: isObscure
-                            ? Icon(Icons.remove_red_eye_outlined)
-                            : Icon(Icons.remove_red_eye),
+                        icon:
+                            isObscure
+                                ? Icon(Icons.remove_red_eye_outlined)
+                                : Icon(Icons.remove_red_eye),
                       ),
                       validator: (value) {
                         if (value == null || value.isEmpty) {
@@ -109,9 +110,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             isObscure = !isObscure;
                           });
                         },
-                        icon: isObscure
-                            ? Icon(Icons.remove_red_eye_outlined)
-                            : Icon(Icons.remove_red_eye),
+                        icon:
+                            isObscure
+                                ? Icon(Icons.remove_red_eye_outlined)
+                                : Icon(Icons.remove_red_eye),
                       ),
                       validator: (value) {
                         if (value == null || value.isEmpty) {
@@ -129,16 +131,25 @@ class _RegisterScreenState extends State<RegisterScreen> {
               SizedBox(height: 20),
               ButtonCustom(
                 onTap: () {},
-                child: TextCustom(data: 'Register', fontWeight: FontWeight.bold, fontSize: 16, color: Colors.white,),
+                child: TextCustom(
+                  data: 'Register',
+                  fontWeight: FontWeight.bold,
+                  fontSize: 16,
+                  color: Colors.white,
+                ),
               ),
               SizedBox(height: 40),
-              TextCustom(data: 'Or Register With', fontSize: 12,),
+              TextCustom(data: 'Or Register With', fontSize: 12),
               SizedBox(height: 20),
               MultiContainerRow(),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  TextCustom(data: 'Already have an account? ', color: Colors.grey, fontSize: 12,),
+                  TextCustom(
+                    data: 'Already have an account? ',
+                    color: Colors.grey,
+                    fontSize: 12,
+                  ),
                   TextButton(
                     onPressed: () {
                       Navigator.pop(context);

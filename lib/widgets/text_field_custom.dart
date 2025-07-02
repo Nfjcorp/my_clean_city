@@ -9,6 +9,7 @@ class TextFieldCustom extends StatelessWidget {
     required this.validator,
     this.obscureText = false,
     required this.controller,
+    this.textInputType
   });
 
   final String labelText;
@@ -17,6 +18,7 @@ class TextFieldCustom extends StatelessWidget {
   final String? Function(String?)? validator;
   final bool obscureText;
   final TextEditingController controller;
+  final TextInputType? textInputType;
 
   @override
   Widget build(BuildContext context) {

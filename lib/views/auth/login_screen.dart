@@ -31,19 +31,7 @@ class _LoginScreenState extends State<LoginScreen> {
     final auth = Provider.of<AuthProviders>(context, listen: false);
     final FirebaseFirestore firestore = FirebaseFirestore.instance;
 
-    if (formKey.currentState!.validate()) return;
-    if (passwordController.text != confirmController.text) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: TextCustom(
-            data: 'Veuillez entrer un mot de passe valide',
-            fontSize: 14,
-          ),
-          duration: Duration(milliseconds: 300),
-        ),
-      );
-      return;
-    }
+    if (!formKey.currentState!.validate()) return;
     try {
       await auth.signInWithEmailAndPassword(
         emailController.text.trim(),
@@ -53,10 +41,9 @@ class _LoginScreenState extends State<LoginScreen> {
         'uid': auth.user!.uid,
         'email': emailController.text.trim(),
       }, SetOptions(merge: true));
-      formKey.currentState?.reset();  // Réinisialise les états de validation
-      emailController.clear();        // vide les Controlleurs manuellement
+      formKey.currentState?.reset(); // Réinisialise les états de validation
+      emailController.clear(); // vide les Controlleurs manuellement
       passwordController.clear();
-      confirmController.clear();
     } on FirebaseAuthException catch (e) {
       throw Exception(e.message);
     }
@@ -96,10 +83,6 @@ class _LoginScreenState extends State<LoginScreen> {
                         validator: (value) {
                           if (value == null || value.isEmpty) {
                             return 'please enter your email';
-                          } else if (!RegExp(
-                            r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2}$',
-                          ).hasMatch(value)) {
-                            return 'please enter a valid email';
                           } else {
                             return null;
                           }
@@ -133,31 +116,6 @@ class _LoginScreenState extends State<LoginScreen> {
                         },
                       ),
                       SizedBox(height: 20),
-                      TextFieldCustom(
-                        controller: confirmController,
-                        labelText: 'Confirm your password',
-                        prefixIcon: Icon(Icons.lock_outline_rounded),
-                        suffixIcon: IconButton(
-                          onPressed: () {
-                            setState(() {
-                              isTrue = !isTrue;
-                            });
-                          },
-                          icon:
-                              isTrue
-                                  ? Icon(Icons.remove_red_eye)
-                                  : Icon(Icons.remove_red_eye),
-                        ),
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return 'please confirm your password';
-                          } else if (value.length < 8) {
-                            return 'password must be at least 8 characters';
-                          } else {
-                            return null;
-                          }
-                        },
-                      ),
                     ],
                   ),
                 ),

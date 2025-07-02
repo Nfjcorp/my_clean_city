@@ -1,7 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:my_clean_city/core/services/authServices/login_or_register.dart';
-import 'package:my_clean_city/views/home/body_home.dart';
+import 'package:my_clean_city/views/home/home_screen.dart';
 
 class AuthGates extends StatelessWidget {
   const AuthGates({super.key});
@@ -15,7 +15,7 @@ class AuthGates extends StatelessWidget {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(child: CircularProgressIndicator());
           } else if (snapshot.hasData) {
-            return BodyHome();
+            return HomeScreen();
           } else {
             return LoginOrRegister();
           }

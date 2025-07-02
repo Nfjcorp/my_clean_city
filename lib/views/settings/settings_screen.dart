@@ -1,10 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_launcher_icons/xml_templates.dart';
 import 'package:my_clean_city/core/utils/helpers.dart';
 import 'package:my_clean_city/views/settings/profile_screen.dart';
-import 'package:my_clean_city/widgets/draggable_scrollable_custom.dart';
 import 'package:my_clean_city/widgets/text_custom.dart';
-import 'package:my_clean_city/widgets/title_button.dart';
 
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
@@ -114,6 +111,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       context: context,
                       builder:
                           (context) => DraggableScrollableSheet(
+                            maxChildSize: 0.7,
                             builder: (context, scrollController) {
                               return Container(
                                 decoration: BoxDecoration(
@@ -208,9 +206,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
   Widget draggableScrollableSheetCustom(ScrollController scrollController) {
     return DraggableScrollableSheet(
-      minChildSize: 0.75,
-      maxChildSize: 1,
-      initialChildSize: 0.75,
+      maxChildSize: 0.25,
       expand: false,
       builder: (context, scrollController) {
         return Container(
@@ -220,9 +216,25 @@ class _SettingsScreenState extends State<SettingsScreen> {
               topRight: Radius.circular(30),
             ),
           ),
-          child: SingleChildScrollView(
-            controller: scrollController,
-            child: Container(),
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Column(
+              children: [
+                TextCustom(
+                  data: 'Choisir la langue',
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                ),
+                InkWell(
+                  onTap: () {},
+                  child: TextCustom(data: 'Français', fontSize: 16),
+                ),
+                InkWell(
+                  onTap: () {},
+                  child: TextCustom(data: 'Anglais', fontSize: 16),
+                ),
+              ],
+            ),
           ),
         );
       },
