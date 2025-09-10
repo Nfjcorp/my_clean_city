@@ -21,6 +21,7 @@ class OnboardingContainer extends StatelessWidget {
         Text(
           title,
           style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+          textAlign: TextAlign.center,
         ),
         SizedBox(height: 10),
         Text(

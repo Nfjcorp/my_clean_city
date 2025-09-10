@@ -50,6 +50,14 @@ class _OnboardingState extends State<OnboardingScrenn> {
                 ),
               ),
               SizedBox(height: 20),
+              /* Wrap(
+                children: List.generate(onboardingData.length, (inexTo) {
+                  return Container(
+                    margin: EdgeInsets.all(5),
+                    height: index==inexTo ? 60 : 50,
+                  );
+                }),
+              ), */
               AnimatedContenu(
                 nbre: onboardingData.length,
                 index: index,
