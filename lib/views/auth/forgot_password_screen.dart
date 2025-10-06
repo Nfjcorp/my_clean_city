@@ -1,11 +1,10 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:my_clean_city/providers/auth_providers.dart';
+import 'package:my_clean_city/core/utils/helpers.dart';
 import 'package:my_clean_city/widgets/button_custom.dart';
 import 'package:my_clean_city/widgets/form_custom.dart';
 import 'package:my_clean_city/widgets/text_custom.dart';
 import 'package:my_clean_city/widgets/text_field_custom.dart';
-import 'package:provider/provider.dart';
 
 class ForgotPasswordScreen extends StatefulWidget {
   const ForgotPasswordScreen({super.key});
@@ -18,22 +17,15 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
   final TextEditingController emailController = TextEditingController();
 
-  void resetPassword() async {
-    final provid = Provider.of<AuthProviders>(context);
-    if (formKey.currentState!.validate()) return;
+  Future<void> _resetPassword() async {
     try {
-      await provid.resetPaswword(emailController.text.trim());
-      // ignore: use_build_context_synchronously
-      Navigator.pop(context);
-      // ignore: use_build_context_synchronously
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Password reset email sent'),
-          duration: Duration(seconds: 2),
-        ),
+      await FirebaseAuth.instance.sendPasswordResetEmail(
+        email: emailController.text.trim(),
       );
+      Navigator.pop(context);
+      showSnackBar(context, 'Password reset send!');
     } on FirebaseAuthException catch (e) {
-      throw Exception(e.code);
+      showSnackBar(context, 'Erreur: ${e.message}');
     }
   }
 
@@ -88,7 +80,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
             ),
             Spacer(),
             ButtonCustom(
-              onTap: resetPassword,
+              onTap: _resetPassword,
               child: Center(
                 child: TextCustom(
                   data: 'continue',

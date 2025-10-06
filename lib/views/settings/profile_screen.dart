@@ -1,11 +1,52 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:my_clean_city/providers/auth_providers.dart';
-import 'package:my_clean_city/views/auth/login_screen.dart';
 import 'package:my_clean_city/widgets/text_custom.dart';
 import 'package:provider/provider.dart';
 
-class ProfileScreen extends StatelessWidget {
+class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
+
+  @override
+  State<ProfileScreen> createState() => _ProfileScreenState();
+}
+
+class _ProfileScreenState extends State<ProfileScreen> {
+  Map<String, dynamic>? userData;
+
+  @override
+  void initState() {
+    super.initState();
+    fetchUserData();
+  }
+
+  Future<void> fetchUserData() async {
+    final user = FirebaseAuth.instance.currentUser;
+    if (user != null) {
+      final doc =
+          await FirebaseFirestore.instance
+              .collection('users')
+              .doc(user.uid)
+              .get();
+      setState(() {
+        userData = doc.data();
+      });
+    }
+  }
+
+  Future<void> signOut(BuildContext context) async {
+    try {
+      await FirebaseAuth.instance.signOut();
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('Déconnexion Réussie')));
+    } on FirebaseAuthException catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Erreur de déconnexion: ${e.message}')),
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -20,7 +61,7 @@ class ProfileScreen extends StatelessWidget {
           icon: Icon(Icons.arrow_back),
         ),
         title: TextCustom(
-          data: 'Profile',
+          data: 'Profil',
           fontSize: 28,
           fontWeight: FontWeight.bold,
         ),
@@ -28,32 +69,51 @@ class ProfileScreen extends StatelessWidget {
       ),
       body: Padding(
         padding: EdgeInsets.all(20.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            IconButton(onPressed: () {}, icon: Icon(Icons.person)),
-            TextCustom(data: user != null ? '${user.email}' : '', fontSize: 18),
-            TextCustom(
-              data: 'Compte',
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
-              color: Colors.black,
-            ),
-            InkWell(
-              onTap: () async {
-                final navigator = Navigator.of(context);
-                await auth.signOut();
-                navigator.pushAndRemoveUntil(
-                  MaterialPageRoute(
-                    builder: (context) => LoginScreen(onTap: () {}),
+        child:
+            userData == null
+                ? Center(child: CircularProgressIndicator())
+                : Container(
+                  height: 400,
+                  decoration: BoxDecoration(color: Colors.green),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      CircleAvatar(
+                        radius: 40,
+                        backgroundImage:
+                            userData!['avatarUrl'] != null
+                                ? NetworkImage(userData!['avatarUrl'])
+                                : null,
+                        child:
+                            userData!['avatarUrl'] == null
+                                ? Icon(Icons.person, size: 40)
+                                : null,
+                      ),
+                      SizedBox(height: 20),
+                      TextCustom(
+                        data: userData!['name'] ?? 'Nom inconnu',
+                        fontSize: 22,
+                        fontWeight: FontWeight.bold,
+                      ),
+                      SizedBox(height: 8),
+                      TextCustom(data: user?.email ?? '', fontSize: 18),
+                      SizedBox(height: 8),
+                      TextCustom(
+                        data: 'Rôle : ${userData!['role'] ?? 'Non défini'}',
+                        fontSize: 16,
+                      ),
+                      SizedBox(height: 30),
+                      InkWell(
+                        onTap: () => signOut(context),
+                        child: TextCustom(
+                          data: 'Déconnexion',
+                          fontSize: 16,
+                          color: Colors.red,
+                        ),
+                      ),
+                    ],
                   ),
-                  (route) => false,
-                );
-              },
-              child: TextCustom(data: 'Déconnexion', fontSize: 18),
-            ),
-          ],
-        ),
+                ),
       ),
     );
   }

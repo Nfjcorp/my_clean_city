@@ -1,15 +1,11 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:my_clean_city/core/utils/helpers.dart';
-import 'package:my_clean_city/providers/auth_providers.dart';
 import 'package:my_clean_city/views/auth/forgot_password_screen.dart';
 import 'package:my_clean_city/widgets/button_custom.dart';
-import 'package:my_clean_city/widgets/form_custom.dart';
 import 'package:my_clean_city/widgets/multi_container_row.dart';
 import 'package:my_clean_city/widgets/text_custom.dart';
 import 'package:my_clean_city/widgets/text_field_custom.dart';
-import 'package:provider/provider.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key, required this.onTap});
@@ -22,30 +18,32 @@ class LoginScreen extends StatefulWidget {
 
 class _LoginScreenState extends State<LoginScreen> {
   bool isTrue = false;
+  bool loading = false;
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
-  final TextEditingController confirmController = TextEditingController();
 
-  void login() async {
-    final auth = Provider.of<AuthProviders>(context, listen: false);
-    final FirebaseFirestore firestore = FirebaseFirestore.instance;
-
+  Future<void> _login() async {
     if (!formKey.currentState!.validate()) return;
+    setState(() {
+      loading = true;
+    });
     try {
-      await auth.signInWithEmailAndPassword(
-        emailController.text.trim(),
-        passwordController.text.trim(),
+      await FirebaseAuth.instance.signInWithEmailAndPassword(
+        email: emailController.text.trim(),
+        password: passwordController.text.trim(),
       );
-      await firestore.collection("users").doc(auth.user!.uid).set({
-        'uid': auth.user!.uid,
-        'email': emailController.text.trim(),
-      }, SetOptions(merge: true));
-      formKey.currentState?.reset(); // Réinisialise les états de validation
-      emailController.clear(); // vide les Controlleurs manuellement
+      formKey.currentState!.reset(); // Réinisialise les états de validation
+      emailController.clear();
       passwordController.clear();
     } on FirebaseAuthException catch (e) {
-      throw Exception(e.message);
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(e.message ?? 'Erreur')));
+    } finally {
+      setState(() {
+        loading = false;
+      });
     }
   }
 
@@ -72,8 +70,8 @@ class _LoginScreenState extends State<LoginScreen> {
                   style: TextStyle(fontSize: 16, color: Colors.grey),
                 ),
                 SizedBox(height: 20),
-                FormCustom(
-                  formKey: formKey,
+                Form(
+                  key: formKey,
                   child: Column(
                     children: [
                       TextFieldCustom(
@@ -107,9 +105,9 @@ class _LoginScreenState extends State<LoginScreen> {
                         ),
                         validator: (value) {
                           if (value == null || value.isEmpty) {
-                            return 'please enter valid password';
+                            return 'Entrez un mot de passe valide';
                           } else if (value.length < 8) {
-                            return 'password must be at least 8 characters';
+                            return 'Le mot de passe doit contenir au moins 8 caractères';
                           } else {
                             return null;
                           }
@@ -136,7 +134,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
                 SizedBox(height: 15.0),
                 ButtonCustom(
-                  onTap: login,
+                  onTap: _login,
                   child: Center(
                     child: TextCustom(
                       textAlign: TextAlign.center,

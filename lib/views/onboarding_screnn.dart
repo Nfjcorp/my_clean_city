@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:my_clean_city/core/services/authServices/auth_gates.dart';
 import 'package:my_clean_city/core/utils/helpers.dart';
 import 'package:my_clean_city/models/onboarding_model.dart';
-import 'package:my_clean_city/widgets/animated_contenu.dart';
-import 'package:my_clean_city/widgets/onboarding_container.dart';
+import 'package:my_clean_city/widgets/my_animated_container.dart';
+import 'package:my_clean_city/widgets/my_onboarding_container.dart';
 import 'package:my_clean_city/widgets/text_custom.dart';
 
 class OnboardingScrenn extends StatefulWidget {
@@ -41,7 +41,7 @@ class _OnboardingState extends State<OnboardingScrenn> {
                   itemCount: onboardingData.length,
                   itemBuilder: (context, index) {
                     final onboarding = onboardingData[index];
-                    return OnboardingContainer(
+                    return MyOnboardingContainer(
                       imageUrl: onboarding['imageUrl'],
                       title: onboarding['title'],
                       description: onboarding['description'],
@@ -58,7 +58,7 @@ class _OnboardingState extends State<OnboardingScrenn> {
                   );
                 }),
               ), */
-              AnimatedContenu(
+              MyAnimatedContainer(
                 nbre: onboardingData.length,
                 index: index,
                 currentIndex: currentIndex,

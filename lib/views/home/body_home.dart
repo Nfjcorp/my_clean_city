@@ -1,23 +1,50 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:my_clean_city/core/utils/colors.dart';
 import 'package:my_clean_city/core/utils/helpers.dart';
 import 'package:my_clean_city/models/item_model.dart';
-import 'package:my_clean_city/providers/auth_providers.dart';
-import 'package:my_clean_city/views/demande/request_screen.dart';
-import 'package:my_clean_city/views/detail/detail_screen.dart';
+import 'package:my_clean_city/views/chat_ia_screen.dart';
+import 'package:my_clean_city/views/citizen_collect_form.dart';
+import 'package:my_clean_city/views/detail_screen.dart';
 import 'package:my_clean_city/views/notifications/notification_screnn.dart';
+import 'package:my_clean_city/views/report_waste_screen.dart';
 import 'package:my_clean_city/widgets/button_custom.dart';
-import 'package:my_clean_city/widgets/item_data_custum.dart';
+import 'package:my_clean_city/widgets/my_item_data.dart';
 import 'package:my_clean_city/widgets/text_custom.dart';
-import 'package:provider/provider.dart';
 
-class BodyHome extends StatelessWidget {
+class BodyHome extends StatefulWidget {
   const BodyHome({super.key});
 
   @override
+  State<BodyHome> createState() => _BodyHomeState();
+}
+
+class _BodyHomeState extends State<BodyHome> {
+  Map<String, dynamic>? userData;
+
+  @override
+  void initState() {
+    super.initState();
+    fetchUserData();
+  }
+
+  Future<void> fetchUserData() async {
+    final user = FirebaseAuth.instance.currentUser;
+    if (user != null) {
+      final doc =
+          await FirebaseFirestore.instance
+              .collection('users')
+              .doc(user.uid)
+              .get();
+      setState(() {
+        userData = doc.data();
+      });
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
-    final auth = Provider.of<AuthProviders>(context);
-    final user = auth.getCurrentUser();
     return Scaffold(
       body: SafeArea(
         child: SingleChildScrollView(
@@ -30,13 +57,13 @@ class BodyHome extends StatelessWidget {
                   children: [
                     TextCustom(
                       data: 'Hello,',
-                      fontSize: 24,
+                      fontSize: 16,
                       fontWeight: FontWeight.bold,
                       color: lightPrimaryText,
                     ),
                     TextCustom(
-                      data: user != null ? '${user.email}' : 'null',
-                      fontSize: 16,
+                      data: userData!['name'] ?? 'Utilisateur',
+                      fontSize: 18,
                       fontWeight: FontWeight.bold,
                       color: Colors.green,
                     ),
@@ -95,7 +122,7 @@ class BodyHome extends StatelessWidget {
                                 ),
                               ),
                             ),
-                        child: ItemDataCustum(
+                        child: MyItemData(
                           tag: data['tag'],
                           image: data['imagePath'],
                           data: data['name'],
@@ -110,10 +137,22 @@ class BodyHome extends StatelessWidget {
                 ),
                 SizedBox(height: 25.0),
                 ButtonCustom(
-                  onTap: () => navigateToNextPage(context, RequestScreen()),
+                  onTap:
+                      () => navigateToNextPage(context, CitizenCollectForm()),
                   child: Center(
                     child: TextCustom(
                       data: 'Effectuer une demande collectte',
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+                SizedBox(height: 25.0),
+                ButtonCustom(
+                  onTap: () => navigateToNextPage(context, ReportWasteForm()),
+                  child: Center(
+                    child: TextCustom(
+                      data: 'Signaler un depot d\'ordure',
                       fontSize: 20,
                       fontWeight: FontWeight.bold,
                     ),
@@ -123,6 +162,11 @@ class BodyHome extends StatelessWidget {
             ),
           ),
         ),
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () => navigateToNextPage(context, ChatIaScreen()),
+        backgroundColor: Colors.green,
+        child: Icon(Icons.smart_toy, color: Colors.white),
       ),
     );
   }

@@ -14,6 +14,7 @@ class DatabaseService {
         'adresse': adresse,
         'phone': phone,
         'quantite': quantite,
+        'statut': 'pending',
         'timestamp': FieldValue.serverTimestamp(),
       });
     } catch (e) {

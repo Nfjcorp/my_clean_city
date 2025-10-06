@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 
-class DraggableScrollableCustom extends StatefulWidget {
-  const DraggableScrollableCustom({super.key});
+class MyDraggableScrollable extends StatefulWidget {
+  const MyDraggableScrollable({super.key});
 
   @override
-  State<DraggableScrollableCustom> createState() =>
+  State<MyDraggableScrollable> createState() =>
       _DraggableScrollableCustomState();
 }
 
-class _DraggableScrollableCustomState extends State<DraggableScrollableCustom> {
+class _DraggableScrollableCustomState extends State<MyDraggableScrollable> {
   @override
   Widget build(BuildContext context) {
     return DraggableScrollableSheet(

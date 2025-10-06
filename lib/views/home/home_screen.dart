@@ -1,8 +1,6 @@
-import 'package:circular_bottom_navigation/circular_bottom_navigation.dart';
-import 'package:circular_bottom_navigation/tab_item.dart';
 import 'package:flutter/material.dart';
 import 'package:my_clean_city/views/home/body_home.dart';
-import 'package:my_clean_city/views/maps/map_screnn.dart';
+import 'package:my_clean_city/views/map_screnn.dart';
 import 'package:my_clean_city/views/settings/settings_screen.dart';
 import 'package:my_clean_city/views/shopping/shop_screen.dart';
 
@@ -14,50 +12,43 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  List<TabItem> tabItems = List.of([
-    TabItem(Icons.home, 'Home', Colors.green),
-    TabItem(Icons.map, 'Point de collecte', Colors.green),
-    TabItem(Icons.shopping_bag, 'Shop', Colors.green),
-    TabItem(Icons.settings, 'Settings', Colors.green),
-  ]);
-
-  List<Widget> screens = [];
-
-  int selectedIndex = 0;
-  CircularBottomNavigationController _navigationController =
-      CircularBottomNavigationController(0);
-  @override
-  void dispose() {
-    _navigationController.dispose();
-    super.dispose();
-  }
+  int currentIndex = 0;
+  List<Widget> _pages = [];
 
   @override
   void initState() {
     super.initState();
-    _navigationController = CircularBottomNavigationController(selectedIndex);
-    screens = [BodyHome(), MapScrenn(), ShopScreen(), SettingsScreen()];
+    _pages = [BodyHome(), MapScreen(), ShopScreen(), SettingsScreen()];
   }
 
   void onTabTapped(int index) {
     setState(() {
-      selectedIndex = index;
+      currentIndex = index;
     });
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: screens[selectedIndex],
-      bottomNavigationBar: CircularBottomNavigation(
-        tabItems,
-        animationDuration: Duration(milliseconds: 300),
-        controller: _navigationController,
-        selectedCallback: (selectedPos) {
-          setState(() {
-            selectedIndex = selectedPos!;
-          });
-        },
+      body: _pages[currentIndex],
+      bottomNavigationBar: BottomNavigationBar(
+        currentIndex: currentIndex,
+        onTap: (int index) => onTabTapped(index),
+        selectedItemColor: Colors.green,
+        type: BottomNavigationBarType.shifting,
+        unselectedItemColor: Colors.grey.shade400,
+        items: [
+          BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
+          BottomNavigationBarItem(icon: Icon(Icons.map), label: 'Carte'),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.shopping_bag),
+            label: 'Shop',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.settings),
+            label: 'Paramètres',
+          ),
+        ],
       ),
     );
   }

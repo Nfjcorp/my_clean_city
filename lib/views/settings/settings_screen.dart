@@ -13,12 +13,7 @@ class SettingsScreen extends StatefulWidget {
 class _SettingsScreenState extends State<SettingsScreen> {
   @override
   Widget build(BuildContext context) {
-    void hello() {
-      debugPrint("heelo");
-    }
-
     final ScrollController scrollController = ScrollController();
-
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
@@ -225,13 +220,30 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   fontSize: 18,
                   fontWeight: FontWeight.bold,
                 ),
-                InkWell(
-                  onTap: () {},
-                  child: TextCustom(data: 'Français', fontSize: 16),
+                Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadiusDirectional.circular(20),
+                    color: Colors.grey.shade300,
+                  ),
+                  child: InkWell(
+                    onTap: () {},
+                    child: TextCustom(data: 'Français', fontSize: 16),
+                  ),
                 ),
-                InkWell(
-                  onTap: () {},
-                  child: TextCustom(data: 'Anglais', fontSize: 16),
+                Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadiusDirectional.circular(20),
+                    color: Colors.grey.shade300,
+                  ),
+                  child: InkWell(
+                    onTap: () {},
+                    child: TextCustom(
+                      data: 'Anglais',
+                      fontSize: 16,
+                      color: Colors.black,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
                 ),
               ],
             ),

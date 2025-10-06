@@ -2,13 +2,11 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:my_clean_city/core/utils/helpers.dart';
-import 'package:my_clean_city/providers/auth_providers.dart';
 import 'package:my_clean_city/widgets/button_custom.dart';
 import 'package:my_clean_city/widgets/form_custom.dart';
 import 'package:my_clean_city/widgets/multi_container_row.dart';
 import 'package:my_clean_city/widgets/text_custom.dart';
 import 'package:my_clean_city/widgets/text_field_custom.dart';
-import 'package:provider/provider.dart';
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key, required this.onTap});
@@ -21,6 +19,7 @@ class RegisterScreen extends StatefulWidget {
 class _RegisterScreenState extends State<RegisterScreen> {
   bool isObscurePassword = true;
   bool isObscureConfirmPassword = true;
+  bool loading = false;
   final formKey = GlobalKey<FormState>();
   final TextEditingController emailController = TextEditingController();
   final TextEditingController nameController = TextEditingController();
@@ -36,52 +35,69 @@ class _RegisterScreenState extends State<RegisterScreen> {
     confirmController.dispose();
   }
 
-  final List<String> regions = [
-    'Douala',
-    'Yaoundé',
-    'Baffoussam',
-    'Buea',
-    'Bamenda',
-    'Garoua',
+  final List<String> quartiers = [
+    'Akwa',
+    'NeW-Bell',
+    'Nkongmondo',
+    'Ndogpassi',
+    'Nyalla'
+        'Cité des palmiers'
+        'Bounamoussadi',
+    'Makepe',
+    'Bonanjo',
+    'Bali',
+    'Bonaberi',
   ];
 
-  String? _selectedRegion;
+  String? _selectedQuartier;
 
-  void register() async {
-    final auth = Provider.of<AuthProviders>(context, listen: false);
-    final FirebaseFirestore firestore = FirebaseFirestore.instance;
+  Future<void> _register() async {
     if (!formKey.currentState!.validate()) return;
     if (passwordController.text != confirmController.text) {
-      showSnackBar(context, 'les deux mots de passe ne correspondent pas');
-      return;
+      showSnackBar(context, 'Les deux mots de passe doivent correspondre');
     }
-
+    setState(() {
+      loading = true;
+    });
     try {
-      print('object');
-      final User = await auth.signUp(
-        emailController.text.trim(),
-        passwordController.text.trim(),
-      );
+      debugPrint('object');
+      final UserCredential userCredential = await FirebaseAuth.instance
+          .createUserWithEmailAndPassword(
+            email: emailController.text.trim(),
+            password: passwordController.text.trim(),
+          );
+      final uid = userCredential.user!.uid;
       debugPrint('id des utilisateurs ');
-      debugPrint('id des utilisateurs :${User!.uid}');
-      await firestore.collection("Users").doc(User.uid).set({
+      debugPrint('id des utilisateurs :${uid.toString()}');
+      await FirebaseFirestore.instance.collection('users').doc(uid).set({
+        'uid': uid,
         'name': nameController.text.trim(),
         'email': emailController.text.trim(),
-        'region': _selectedRegion,
-        'timestamp': Timestamp.now(),
+        'role': 'citoyen',
+        'quartier': _selectedQuartier,
+        'points': 0,
+        'createAt': FieldValue.serverTimestamp(),
       });
-      print('object re');
-
-      formKey.currentState!.reset(); // Réinisialise les états de validation
+      debugPrint("object re");
       nameController.clear();
       emailController.clear();
       passwordController.clear();
       confirmController.clear();
       setState(() {
-        _selectedRegion = null;
+        _selectedQuartier = null;
       });
-    } on FirebaseException catch (e) {
-      throw Exception(e.message);
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('Compte crée')));
+      Navigator.pop(context);
+    } on FirebaseAuthException catch (e) {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(e.message ?? 'Erreur')));
+    } finally {
+      setState(() {
+        loading = false;
+      });
     }
   }
 
@@ -144,9 +160,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       ),
                       SizedBox(height: 20),
                       DropdownButtonFormField<String>(
-                        value: _selectedRegion,
+                        value: _selectedQuartier,
                         items:
-                            regions
+                            quartiers
                                 .map(
                                   (city) => DropdownMenuItem(
                                     value: city,
@@ -155,7 +171,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                 )
                                 .toList(),
                         onChanged:
-                            (value) => setState(() => _selectedRegion = value),
+                            (value) =>
+                                setState(() => _selectedQuartier = value),
                         decoration: InputDecoration(
                           filled: true,
                           fillColor: Colors.grey[300],
@@ -170,13 +187,13 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             ),
                             borderRadius: BorderRadius.circular(15),
                           ),
-                          labelText: 'Choisissez une ville',
+                          labelText: 'Choisissez un quartier',
                           border: OutlineInputBorder(),
                         ),
                         validator:
                             (value) =>
                                 value == null
-                                    ? ' Veuillez Choisir une ville'
+                                    ? ' Veuillez Choisir un quartier'
                                     : null,
                       ),
                       SizedBox(height: 20),
@@ -238,17 +255,19 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   ),
                 ),
                 SizedBox(height: 20),
-                ButtonCustom(
-                  onTap: () => register(),
-                  child: Center(
-                    child: TextCustom(
-                      data: 'Sign Up',
-                      fontSize: 18,
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
+                loading
+                    ? Scaffold(body: Center(child: CircularProgressIndicator()))
+                    : ButtonCustom(
+                      onTap: () => _register(),
+                      child: Center(
+                        child: TextCustom(
+                          data: 'Sign Up',
+                          fontSize: 18,
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
                     ),
-                  ),
-                ),
                 SizedBox(height: 40),
                 Row(
                   children: [

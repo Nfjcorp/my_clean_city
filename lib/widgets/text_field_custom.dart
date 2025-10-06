@@ -6,10 +6,11 @@ class TextFieldCustom extends StatelessWidget {
     required this.labelText,
     this.suffixIcon,
     required this.prefixIcon,
-    required this.validator,
+    this.validator,
     this.obscureText = false,
     required this.controller,
-    this.textInputType
+    this.textInputType,
+    this.maxLines
   });
 
   final String labelText;
@@ -19,12 +20,14 @@ class TextFieldCustom extends StatelessWidget {
   final bool obscureText;
   final TextEditingController controller;
   final TextInputType? textInputType;
+  final int? maxLines;
 
   @override
   Widget build(BuildContext context) {
     return TextFormField(
       controller: controller,
       obscureText: obscureText,
+      maxLines: maxLines,
       decoration: InputDecoration(
         filled: true,
         fillColor: Colors.grey[300],

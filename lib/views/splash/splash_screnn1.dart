@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:my_clean_city/core/utils/helpers.dart';
 import 'package:my_clean_city/providers/auth_providers.dart';
 import 'package:my_clean_city/views/home/body_home.dart';
-import 'package:my_clean_city/views/onboarding/onboarding_screnn.dart';
+import 'package:my_clean_city/views/onboarding_screnn.dart';
 import 'package:my_clean_city/widgets/text_custom.dart';
 import 'package:provider/provider.dart';
 

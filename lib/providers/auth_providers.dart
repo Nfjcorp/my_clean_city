@@ -15,11 +15,18 @@ class AuthProviders extends ChangeNotifier {
     String password,
   ) async {
     try {
+      /* final cred = await _auth.signInWithEmailAndPassword(
+        email: email,
+        password: password,
+      ); */
+      //final user = cred.user;
       UserCredential userCredential = await _auth.signInWithEmailAndPassword(
         email: email,
         password: password,
       );
-      return userCredential.user;
+      _user = userCredential.user;
+      notifyListeners();
+      return _user;
     } on FirebaseAuthException catch (e) {
       throw Exception(e.message);
     }
@@ -30,7 +37,9 @@ class AuthProviders extends ChangeNotifier {
     try {
       UserCredential userCredential = await _auth
           .createUserWithEmailAndPassword(email: email, password: password);
-      return userCredential.user;
+      _user = userCredential.user;
+      notifyListeners();
+      return _user;
     } on FirebaseAuthException catch (e) {
       throw Exception(e.message);
     }
@@ -39,7 +48,8 @@ class AuthProviders extends ChangeNotifier {
   // Sign out method
   Future<void> signOut() async {
     await _auth.signOut();
-    
+    _user = null;
+    notifyListeners();
   }
 
   // reset Password
@@ -53,7 +63,9 @@ class AuthProviders extends ChangeNotifier {
 
   // get currentUser
   User? getCurrentUser() {
-    return _auth.currentUser;
+    _user = _auth.currentUser;
+    notifyListeners();
+    return _user;
   }
 
   /* // Update photoURL

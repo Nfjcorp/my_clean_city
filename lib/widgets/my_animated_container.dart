@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-class AnimatedContenu extends StatelessWidget {
-  const AnimatedContenu({
+class MyAnimatedContainer extends StatelessWidget {
+  const MyAnimatedContainer({
     super.key,
     required this.nbre,
     required this.index,

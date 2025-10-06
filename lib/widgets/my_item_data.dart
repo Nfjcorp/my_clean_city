@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-class ItemDataCustum extends StatelessWidget {
-  const ItemDataCustum({
+class MyItemData extends StatelessWidget {
+  const MyItemData({
     super.key,
     required this.image,
     required this.data,
